@@ -14,84 +14,128 @@ from PIL import Image
 import plotly.express as px
 from langchain_anthropic import ChatAnthropic
 
+# Configuración de la página
+st.set_page_config(
+    page_title="Análisis de Datos con IA",
+    page_icon="🤖",
+    layout="wide"
+)
 
-# Configuración de la página de Streamlit
-st.title('Analítica de datos con Agentes 🤖🔍')
-image = Image.open('data_analisis.png')
-st.image(image, width=350)
+# Aplicar estilo CSS personalizado
+st.markdown("""
+    <style>
+    .main {
+        padding: 2rem;
+    }
+    .stTitle {
+        color: #2E4053;
+        font-size: 2.5rem !important;
+    }
+    .stSubheader {
+        color: #566573;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
+# Título principal con diseño mejorado
+st.title('🤖 Analítica de datos con Agentes IA')
+
+# Crear dos columnas para mejor organización
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.markdown("""
+    ### 📊 Carga tus datos y descubre insights
+    Esta herramienta utiliza IA para analizar tus datos de forma inteligente y responder a tus preguntas en lenguaje natural.
+    """)
+
+with col2:
+    image = Image.open('data_analisis.png')
+    st.image(image, width=300)
+
+# Sidebar mejorada
 with st.sidebar:
-    st.subheader("Este Agente de Pandas con Claude te ayudará a realizar análisis sobre tus datos")
+    st.markdown("## ⚙️ Configuración")
+    st.markdown("---")
+    st.markdown("### 🔑 Configuración de API")
+    ke = st.text_input('Clave de Anthropic:', type="password", help="Ingresa tu API key de Anthropic")
+    
+    if ke:
+        os.environ['ANTHROPIC_API_KEY'] = ke
+        st.success('API key configurada correctamente! ✅')
+    
+    st.markdown("---")
+    st.markdown("### 📖 Información")
+    st.info("""
+    Este Agente de Pandas con Claude te ayudará a:
+    - Analizar datos estadísticos
+    - Identificar patrones
+    - Generar visualizaciones
+    - Responder preguntas sobre tus datos
+    """)
 
-# Input para la API key de Anthropic
-ke = st.text_input('Ingresa tu Clave de Anthropic')
-os.environ['ANTHROPIC_API_KEY'] = ke
+# Sección principal
+st.markdown("### 📤 Carga tu archivo")
+uploaded_file = st.file_uploader('Selecciona un archivo CSV:', type=['csv'])
 
-# Carga de archivo
-uploaded_file = st.file_uploader('Elige el archivo csv')
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file, on_bad_lines='skip')
-    st.write(df)
+    with st.expander("👀 Vista previa de los datos", expanded=True):
+        df = pd.read_csv(uploaded_file, on_bad_lines='skip')
+        st.dataframe(df.head(), use_container_width=True)
+        st.info(f"Dimensiones del dataset: {df.shape[0]} filas x {df.shape[1]} columnas")
 
-st.subheader('Te ayudaré a analizar los datos que cargues.')
-user_question = st.text_input("¿Qué deseas saber de los datos?:")
+    st.markdown("### ❓ Realiza tu consulta")
+    with st.form(key='query_form'):
+        user_question = st.text_input("¿Qué deseas saber sobre los datos?",
+                                    placeholder="Ejemplo: ¿Cuál es el promedio de ventas?")
+        submit_button = st.form_submit_button(label='Analizar datos 🔍')
 
-def format_response_for_streamlit(response):
-    """Formatea la respuesta para mostrarla en Streamlit"""
-    # Eliminar los bloques de código Python si existen
-    clean_response = response.replace("```python", "").replace("```", "")
-    
-    # Mostrar la respuesta formateada
-    st.write("### Análisis:")
-    st.write(clean_response)
-    
-    # Si hay resultados numéricos, intentar mostrarlos como métricas
-    try:
-        if any(char.isdigit() for char in clean_response):
-            numbers = [float(s) for s in clean_response.split() if s.replace('.','',1).isdigit()]
-            if numbers:
-                st.metric("Valor encontrado", numbers[0])
-    except:
-        pass
+    def format_response_for_streamlit(response):
+        """Formatea la respuesta para mostrarla en Streamlit"""
+        st.markdown("### 📊 Resultados del análisis")
+        
+        # Crear un contenedor estilizado para la respuesta
+        with st.container():
+            st.markdown(f"""
+            <div style="padding: 1rem; border-radius: 0.5rem; background-color: #f8f9fa;">
+                {response}
+            </div>
+            """, unsafe_allow_html=True)
 
-def custom_prompt(question):
-    return f"""
-    Responde SIEMPRE en español.
-    Analiza los siguientes datos según esta pregunta: {question}
-    
-    Por favor:
-    1. Da una respuesta clara y concisa
-    2. Si son resultados numéricos, menciónalos claramente
-    3. Si es una tendencia o patrón, descríbelo específicamente
-    4. Usa formato de lista o puntos cuando sea apropiado
-    5. No muestres el código, solo los resultados
-    
-    
-    """
+    def custom_prompt(question):
+        return f"""
+        Responde SIEMPRE en español.
+        Analiza los siguientes datos según esta pregunta: {question}
+        
+        Por favor:
+        1. Da una respuesta clara y concisa
+        2. Si son resultados numéricos, menciónalos claramente
+        3. Si es una tendencia o patrón, descríbelo específicamente
+        4. Usa formato de lista o puntos cuando sea apropiado
+        5. No muestres el código, solo los resultados
+        """
 
-if user_question and ke and uploaded_file is not None:
-    try:
-        with st.spinner('Analizando los datos...'):
-            # Crear el agente con Claude y parámetros correctos
-            agent = create_pandas_dataframe_agent( ChatAnthropic(model='claude-3-5-sonnet-20241022'), #claude-3-haiku-20240307
-                #Anthropic(
-                #    model="claude-2.1",
-                #    temperature=0,
-                #    max_tokens=1500,
-                #    anthropic_api_key=ke
-                #),
-                df,
-                verbose=True,
-                agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-                handle_parsing_errors=True,
-                allow_dangerous_code=True,  # Agregado el parámetro requerido
-            )
-            
-            # Ejecutar la consulta
-            response = agent.run(custom_prompt(user_question))
-            
-            # Mostrar la respuesta formateada
-            #format_response_for_streamlit(response)
-            st.write(response)
-    except Exception as e:
-        st.error(f"Ocurrió un error al analizar los datos: {str(e)}")
+    if submit_button and user_question and ke and uploaded_file is not None:
+        try:
+            with st.spinner('🔄 Analizando los datos...'):
+                # Crear el agente con Claude
+                agent = create_pandas_dataframe_agent(
+                    ChatAnthropic(model='claude-3-5-sonnet-20241022'),
+                    df,
+                    verbose=True,
+                    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+                    handle_parsing_errors=True,
+                    allow_dangerous_code=True,
+                )
+                
+                # Ejecutar la consulta
+                response = agent.run(custom_prompt(user_question))
+                
+                # Mostrar la respuesta formateada
+                format_response_for_streamlit(response)
+                
+        except Exception as e:
+            st.error(f"❌ Error al analizar los datos: {str(e)}")
+    
+    elif submit_button and (not ke or not user_question):
+        st.warning("⚠️ Por favor, asegúrate de proporcionar tanto la API key como una pregunta.")
