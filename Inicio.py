@@ -84,8 +84,8 @@ with main_container:
     # Carga de imagen con mejor presentación
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
-        image = Image.open('data_analisis.png')
-        st.image(image, use_column_width=True)
+        #image = Image.open('data_analisis.png')
+        #st.image(image, use_column_width=True)
     
     # Carga de archivo con mejor feedback
     st.subheader("📁 Carga de Datos")
