@@ -12,6 +12,9 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
+import io
+from fpdf import FPDF
+from datetime import datetime
 
 # Configuración de la página
 st.set_page_config(
@@ -20,6 +23,35 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="expanded"
 )
+
+# Función para generar PDF
+def create_pdf(response, question):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Configurar fuente
+    pdf.set_font('Arial', 'B', 16)
+    
+    # Título
+    pdf.cell(190, 10, 'Reporte de Análisis de Datos', 0, 1, 'C')
+    
+    # Fecha
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(190, 10, f'Fecha: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'R')
+    
+    # Pregunta
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(190, 10, 'Pregunta:', 0, 1)
+    pdf.set_font('Arial', '', 12)
+    pdf.multi_cell(190, 10, question)
+    
+    # Respuesta
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(190, 10, 'Resultados:', 0, 1)
+    pdf.set_font('Arial', '', 12)
+    pdf.multi_cell(190, 10, response)
+    
+    return pdf.output(dest='S').encode('latin-1')
 
 # Estilos personalizados usando st.markdown
 st.markdown("""
@@ -42,6 +74,10 @@ st.markdown("""
         }
         div[data-testid="stMetricLabel"] {
             font-size: 1rem;
+        }
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -83,9 +119,9 @@ main_container = st.container()
 with main_container:
     # Carga de imagen con mejor presentación
     col1, col2, col3 = st.columns([1,2,1])
-    #with col2:
-        #image = Image.open('data_analisis.png')
-        #st.image(image, use_column_width=True)
+    with col2:
+        image = Image.open('data_analisis.png')
+        st.image(image, use_column_width=True)
     
     # Carga de archivo con mejor feedback
     st.subheader("📁 Carga de Datos")
@@ -139,19 +175,34 @@ with main_container:
                     use_container_width=True
                 )
 
-        def format_response(response):
-            """Mejora el formato de la respuesta"""
+        def format_response(response, question):
+            """Mejora el formato de la respuesta y agrega opciones de descarga"""
             st.markdown("### 📋 Resultados del Análisis")
             st.info(response)
             
-            # Agregar opciones de descarga si hay resultados numéricos
-            if any(char.isdigit() for char in response):
-                st.download_button(
-                    label="📥 Descargar Resultados",
-                    data=response,
-                    file_name="analisis_resultados.txt",
-                    mime="text/plain"
-                )
+            # Agregar opciones de descarga si hay resultados
+            if response:
+                st.markdown("### 📥 Descargar Resultados")
+                col1, col2 = st.columns(2)
+                
+                # Botón de descarga TXT
+                with col1:
+                    st.download_button(
+                        label="📄 Descargar TXT",
+                        data=f"Pregunta:\n{question}\n\nRespuesta:\n{response}",
+                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                        mime="text/plain"
+                    )
+                
+                # Botón de descarga PDF
+                with col2:
+                    pdf_data = create_pdf(response, question)
+                    st.download_button(
+                        label="📑 Descargar PDF",
+                        data=pdf_data,
+                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                        mime="application/pdf"
+                    )
 
         def custom_prompt(question):
             return f"""
@@ -185,7 +236,7 @@ with main_container:
                         )
                         
                         response = agent.run(custom_prompt(user_question))
-                        format_response(response)
+                        format_response(response, user_question)
                         
                 except Exception as e:
                     st.error(f"❌ Error en el análisis: {str(e)}")
