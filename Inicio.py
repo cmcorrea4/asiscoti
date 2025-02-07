@@ -86,6 +86,15 @@ st.markdown("""
 with st.container():
     st.title('📊 Análisis Inteligente de Datos')
     st.markdown("---")
+    
+    # Agregar el componente de Elevenlabs
+    elevenlabs_html = """
+        <div style="margin: 20px 0;">
+            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+            <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+        </div>
+    """
+    st.components.v1.html(elevenlabs_html, height=600)
 
 # Sidebar mejorada y más profesional
 with st.sidebar:
@@ -119,9 +128,9 @@ main_container = st.container()
 with main_container:
     # Carga de imagen con mejor presentación
     col1, col2, col3 = st.columns([1,2,1])
-    #with col2:
-        #image = Image.open('data_analisis.png')
-        #st.image(image, use_column_width=True)
+    with col2:
+        image = Image.open('data_analisis.png')
+        st.image(image, use_column_width=True)
     
     # Carga de archivo con mejor feedback
     st.subheader("📁 Carga de Datos")
