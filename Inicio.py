@@ -82,6 +82,26 @@ st.markdown("""
 st.title('📊 Análisis Inteligente de Datos')
 st.markdown("---")
 
+# Asistente de voz en la parte superior
+st.subheader("💬 Asistente de Voz")
+chat_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Chat Widget</title>
+    </head>
+    <body>
+        <div style="width: 100%; height: 400px;">
+            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+        </div>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+    </body>
+    </html>
+"""
+st.components.v1.html(chat_html, height=450, scrolling=True)
+st.markdown("---")
+
 # Sidebar
 with st.sidebar:
     st.header("⚙️ Configuración")
@@ -110,8 +130,8 @@ with st.sidebar:
         """)
 
 # Imagen principal
-#image = Image.open('data_analisis.png')
-#st.image(image, use_column_width=True)
+image = Image.open('data_analisis.png')
+st.image(image, use_column_width=True)
 
 # Carga de archivo
 st.subheader("📁 Carga de Datos")
@@ -241,24 +261,3 @@ if uploaded_file is not None:
                         st.info("No se pudo procesar la respuesta. Por favor, intenta reformular tu pregunta.")
                 else:
                     st.info("Por favor, intenta reformular tu pregunta de una manera más clara.")
-
-    # Asistente de voz después de la sección de consulta
-    st.markdown("---")
-    st.subheader("💬 Asistente de Voz")
-    chat_html = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Chat Widget</title>
-        </head>
-        <body>
-            <div style="width: 100%; height: 500px;">
-                <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
-            </div>
-            <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-        </body>
-        </html>
-    """
-    with st.expander("Expandir Asistente de Voz", expanded=True):
-        st.components.v1.html(chat_html, height=550, scrolling=True)
