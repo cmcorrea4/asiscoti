@@ -216,19 +216,30 @@ if uploaded_file is not None:
 
     def custom_prompt(question):
         return f"""
-        Responde SIEMPRE en español. vas a cotizar usando la info del dataframe, 
-        la información corresponde a cilindros de madera tienen , la idea es 
-        encontrar las información correspondiente a columnas y los valores, para
-        definir los precios o cotizar realizando la suma de los elementos de la 
-        consulta
-        Analiza los siguientes datos según esta pregunta: {question}
-        
-        Por favor:
-        1. Da una respuesta clara y concisa
-        2. Si son resultados numéricos, menciónalos claramente
-        3. Si es una tendencia o patrón, descríbelo específicamente
-        4. Usa formato de lista o puntos cuando sea apropiado
-        5. No muestres el código, solo los resultados
+        Eres un asistente especializado en cotizaciones. Utiliza la base de datos proporcionada 
+        para responder la siguiente consulta: {question}
+
+        Instrucciones específicas:
+        1. Responde siempre en español de manera clara y concisa
+        2. Al calcular cotizaciones:
+          - Usa el Precio_COP como base
+          - Aplica el porcentaje de descuento correspondiente
+          - Para múltiples items, suma los subtotales después de descuentos
+          - Redondea todos los valores monetarios a números enteros
+        3. Estructura la respuesta así:
+          - Lista los items solicitados con sus especificaciones
+          - Muestra subtotales por item incluyendo descuentos
+          - Presenta el total final
+        4. No muestres el código, solo los resultados del cálculo
+        5. Si faltan datos o hay ambigüedad, solicita aclaración
+
+        Formato de respuesta:
+         - Especificaciones: longitud y diámetro
+         - Cantidad de unidades
+         - Precio unitario
+         - Descuento aplicado
+         - Subtotal después de descuento
+         - Total final (para múltiples items)
         """
 
     # Proceso de análisis
