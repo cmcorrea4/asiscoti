@@ -11,131 +11,182 @@ from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe
 import pandas as pd
 import numpy as np
 from PIL import Image
-import plotly.express as px
 from langchain_anthropic import ChatAnthropic
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Análisis de Datos con IA",
-    page_icon="🤖",
-    layout="wide"
+    page_title="Análisis Inteligente de Datos",
+    page_icon="📊",
+    layout="centered",
+    initial_sidebar_state="expanded"
 )
 
-# Aplicar estilo CSS personalizado
+# Estilos personalizados usando st.markdown
 st.markdown("""
     <style>
-    .main {
-        padding: 2rem;
-    }
-    .stTitle {
-        color: #2E4053;
-        font-size: 2.5rem !important;
-    }
-    .stSubheader {
-        color: #566573;
-    }
+        div.stButton > button {
+            width: 100%;
+            background-color: #FF4B4B;
+            color: white;
+            font-weight: bold;
+        }
+        div.stButton > button:hover {
+            background-color: #FF6B6B;
+            color: white;
+        }
+        .reportview-container .main .block-container {
+            padding-top: 2rem;
+        }
+        div[data-testid="stMetricValue"] {
+            font-size: 2rem;
+        }
+        div[data-testid="stMetricLabel"] {
+            font-size: 1rem;
+        }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# Título principal con diseño mejorado
-st.title('🤖 Analítica de datos con Agentes IA')
-
-# Crear dos columnas para mejor organización
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.markdown("""
-    ### 📊 Carga tus datos y descubre insights
-    Esta herramienta utiliza IA para analizar tus datos de forma inteligente y responder a tus preguntas en lenguaje natural.
-    """)
-
-with col2:
-    image = Image.open('data_analisis.png')
-    st.image(image, width=300)
-
-# Sidebar mejorada
-with st.sidebar:
-    st.markdown("## ⚙️ Configuración")
+# Contenedor principal con diseño mejorado
+with st.container():
+    st.title('📊 Análisis Inteligente de Datos')
     st.markdown("---")
-    st.markdown("### 🔑 Configuración de API")
-    ke = st.text_input('Clave de Anthropic:', type="password", help="Ingresa tu API key de Anthropic")
+
+# Sidebar mejorada y más profesional
+with st.sidebar:
+    st.header("⚙️ Configuración")
+    
+    # API Key con mejor manejo de estado
+    st.subheader("Configuración de API")
+    ke = st.text_input(
+        "API Key de Anthropic",
+        type="password",
+        help="Ingresa tu clave API de Anthropic para continuar"
+    )
     
     if ke:
         os.environ['ANTHROPIC_API_KEY'] = ke
-        st.success('API key configurada correctamente! ✅')
+        st.success("API configurada correctamente")
     
+    # Información del sistema
     st.markdown("---")
-    st.markdown("### 📖 Información")
-    st.info("""
-    Este Agente de Pandas con Claude te ayudará a:
-    - Analizar datos estadísticos
-    - Identificar patrones
-    - Generar visualizaciones
-    - Responder preguntas sobre tus datos
-    """)
+    st.subheader("Sobre el Sistema")
+    with st.expander("ℹ️ Información", expanded=False):
+        st.markdown("""
+        Este sistema utiliza:
+        - Claude para análisis avanzado
+        - Pandas para procesamiento de datos
+        - IA para interpretación de resultados
+        """)
 
-# Sección principal
-st.markdown("### 📤 Carga tu archivo")
-uploaded_file = st.file_uploader('Selecciona un archivo CSV:', type=['csv'])
-
-if uploaded_file is not None:
-    with st.expander("👀 Vista previa de los datos", expanded=True):
-        df = pd.read_csv(uploaded_file, on_bad_lines='skip')
-        st.dataframe(df.head(), use_container_width=True)
-        st.info(f"Dimensiones del dataset: {df.shape[0]} filas x {df.shape[1]} columnas")
-
-    st.markdown("### ❓ Realiza tu consulta")
-    with st.form(key='query_form'):
-        user_question = st.text_input("¿Qué deseas saber sobre los datos?",
-                                    placeholder="Ejemplo: ¿Cuál es el promedio de ventas?")
-        submit_button = st.form_submit_button(label='Analizar datos 🔍')
-
-    def format_response_for_streamlit(response):
-        """Formatea la respuesta para mostrarla en Streamlit"""
-        st.markdown("### 📊 Resultados del análisis")
-        
-        # Crear un contenedor estilizado para la respuesta
-        with st.container():
-            st.markdown(f"""
-            <div style="padding: 1rem; border-radius: 0.5rem; background-color: #f8f9fa;">
-                {response}
-            </div>
-            """, unsafe_allow_html=True)
-
-    def custom_prompt(question):
-        return f"""
-        Responde SIEMPRE en español.
-        Analiza los siguientes datos según esta pregunta: {question}
-        
-        Por favor:
-        1. Da una respuesta clara y concisa
-        2. Si son resultados numéricos, menciónalos claramente
-        3. Si es una tendencia o patrón, descríbelo específicamente
-        4. Usa formato de lista o puntos cuando sea apropiado
-        5. No muestres el código, solo los resultados
-        """
-
-    if submit_button and user_question and ke and uploaded_file is not None:
-        try:
-            with st.spinner('🔄 Analizando los datos...'):
-                # Crear el agente con Claude
-                agent = create_pandas_dataframe_agent(
-                    ChatAnthropic(model='claude-3-5-sonnet-20241022'),
-                    df,
-                    verbose=True,
-                    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-                    handle_parsing_errors=True,
-                    allow_dangerous_code=True,
-                )
-                
-                # Ejecutar la consulta
-                response = agent.run(custom_prompt(user_question))
-                
-                # Mostrar la respuesta formateada
-                format_response_for_streamlit(response)
-                
-        except Exception as e:
-            st.error(f"❌ Error al analizar los datos: {str(e)}")
+# Área principal de la aplicación
+main_container = st.container()
+with main_container:
+    # Carga de imagen con mejor presentación
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        image = Image.open('data_analisis.png')
+        st.image(image, use_column_width=True)
     
-    elif submit_button and (not ke or not user_question):
-        st.warning("⚠️ Por favor, asegúrate de proporcionar tanto la API key como una pregunta.")
+    # Carga de archivo con mejor feedback
+    st.subheader("📁 Carga de Datos")
+    uploaded_file = st.file_uploader(
+        "Selecciona tu archivo CSV",
+        type=['csv'],
+        help="Por favor, asegúrate de que tu archivo esté en formato CSV"
+    )
+
+    if uploaded_file is not None:
+        # Mostrar datos con métricas
+        df = pd.read_csv(uploaded_file, on_bad_lines='skip')
+        
+        # Métricas importantes
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Filas", df.shape[0])
+        with col2:
+            st.metric("Columnas", df.shape[1])
+        with col3:
+            st.metric("Campos Total", df.size)
+        
+        # Vista previa de datos
+        with st.expander("📊 Vista Previa de Datos", expanded=True):
+            st.dataframe(
+                df.head(),
+                use_container_width=True,
+                height=200
+            )
+            
+            # Información básica del dataset
+            if st.checkbox("Mostrar información del dataset"):
+                st.write("### Información del Dataset")
+                buffer = io.StringIO()
+                df.info(buf=buffer)
+                st.text(buffer.getvalue())
+
+        # Formulario de consulta
+        st.subheader("🔍 Consulta")
+        with st.form(key='query_form'):
+            user_question = st.text_area(
+                "¿Qué deseas analizar en los datos?",
+                placeholder="Ejemplo: ¿Cuál es el promedio de ventas por mes?",
+                help="Escribe tu pregunta en lenguaje natural"
+            )
+            
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                submit_button = st.form_submit_button(
+                    "🔍 Analizar Datos",
+                    use_container_width=True
+                )
+
+        def format_response(response):
+            """Mejora el formato de la respuesta"""
+            st.markdown("### 📋 Resultados del Análisis")
+            st.info(response)
+            
+            # Agregar opciones de descarga si hay resultados numéricos
+            if any(char.isdigit() for char in response):
+                st.download_button(
+                    label="📥 Descargar Resultados",
+                    data=response,
+                    file_name="analisis_resultados.txt",
+                    mime="text/plain"
+                )
+
+        def custom_prompt(question):
+            return f"""
+            Responde SIEMPRE en español.
+            Analiza los siguientes datos según esta pregunta: {question}
+            
+            Por favor:
+            1. Da una respuesta clara y concisa
+            2. Si son resultados numéricos, menciónalos claramente
+            3. Si es una tendencia o patrón, descríbelo específicamente
+            4. Usa formato de lista o puntos cuando sea apropiado
+            5. No muestres el código, solo los resultados
+            """
+
+        # Proceso de análisis
+        if submit_button:
+            if not ke:
+                st.error("⚠️ Por favor, configura tu API key primero")
+            elif not user_question:
+                st.warning("⚠️ Por favor, ingresa una pregunta")
+            else:
+                try:
+                    with st.spinner('⏳ Analizando datos...'):
+                        agent = create_pandas_dataframe_agent(
+                            ChatAnthropic(model='claude-3-5-sonnet-20241022'),
+                            df,
+                            verbose=True,
+                            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+                            handle_parsing_errors=True,
+                            allow_dangerous_code=True
+                        )
+                        
+                        response = agent.run(custom_prompt(user_question))
+                        format_response(response)
+                        
+                except Exception as e:
+                    st.error(f"❌ Error en el análisis: {str(e)}")
+                    st.error("Por favor, intenta reformular tu pregunta o verifica tus datos")
