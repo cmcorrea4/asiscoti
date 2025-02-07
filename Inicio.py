@@ -110,8 +110,8 @@ with st.sidebar:
         """)
 
 # Imagen principal
-image = Image.open('data_analisis.png')
-st.image(image, use_column_width=True)
+#image = Image.open('data_analisis.png')
+#st.image(image, use_column_width=True)
 
 # Carga de archivo
 st.subheader("📁 Carga de Datos")
