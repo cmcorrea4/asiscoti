@@ -95,7 +95,7 @@ with col_voice:
             <title>Chat Widget</title>
         </head>
         <body>
-            <div style="width: 100%; height: 200px;">
+            <div style="width: 100%; height: 500px;">
                 <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
             </div>
             <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
@@ -135,8 +135,8 @@ with col_main:
             """)
 
     # Imagen principal
-    #image = Image.open('data_analisis.png')
-    #st.image(image, use_column_width=True)
+    image = Image.open('data_analisis.png')
+    st.image(image, use_column_width=True)
     
     # Carga de archivo
     st.subheader("📁 Carga de Datos")
@@ -254,5 +254,15 @@ with col_main:
                         format_response(response, user_question)
                         
                 except Exception as e:
-                    st.error(f"❌ Error en el análisis: {str(e)}")
-                    st.error("Por favor, intenta reformular tu pregunta o verifica tus datos")
+                    error_str = str(e)
+                    if "Could not parse LLM output:" in error_str:
+                        # Extraer la respuesta útil del mensaje de error
+                        start_index = error_str.find('`') + 1
+                        end_index = error_str.find('`', start_index)
+                        if start_index > 0 and end_index > 0:
+                            useful_response = error_str[start_index:end_index]
+                            format_response(useful_response, user_question)
+                        else:
+                            st.info("No se pudo procesar la respuesta. Por favor, intenta reformular tu pregunta.")
+                    else:
+                        st.info("Por favor, intenta reformular tu pregunta de una manera más clara.")
