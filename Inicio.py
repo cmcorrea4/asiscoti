@@ -20,7 +20,7 @@ from datetime import datetime
 st.set_page_config(
     page_title="Análisis Inteligente de Datos",
     page_icon="📊",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="expanded"
 )
 
@@ -53,7 +53,7 @@ def create_pdf(response, question):
     
     return pdf.output(dest='S').encode('latin-1')
 
-# Estilos personalizados usando st.markdown
+# Estilos personalizados
 st.markdown("""
     <style>
         div.stButton > button {
@@ -75,85 +75,70 @@ st.markdown("""
         div[data-testid="stMetricLabel"] {
             font-size: 1rem;
         }
-        .download-buttons {
-            display: flex;
-            gap: 1rem;
-        }
     </style>
 """, unsafe_allow_html=True)
 
-# Contenedor principal con diseño mejorado
-with st.container():
-    st.title('📊 Análisis Inteligente de Datos')
-    st.markdown("---")
+# Título principal
+st.title('📊 Análisis Inteligente de Datos')
+st.markdown("---")
 
-    # División en dos columnas: principal y asistente de voz
-    col_main, col_voice = st.columns([2, 1])
-    
-    with col_voice:
-        # Componente de Elevenlabs
-        chat_html = """
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="utf-8">
-                <title>Chat Widget</title>
-            </head>
-            <body>
-                <div style="width: 100%; height: 500px;">
-                    <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
-                </div>
-                <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-            </body>
-            </html>
-        """
-        with st.expander("💬 Asistente de Voz", expanded=True):
-            st.components.v1.html(chat_html, height=550, scrolling=True)
-    
-    with col_main:
-    
-    # Agregar el componente de Elevenlabs
-    elevenlabs_html = """
-        <div style="margin: 20px 0;">
-            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
-            <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
-        </div>
+# Crear el layout de dos columnas
+col_main, col_voice = st.columns([2, 1])
+
+# Columna del asistente de voz
+with col_voice:
+    chat_html = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Chat Widget</title>
+        </head>
+        <body>
+            <div style="width: 100%; height: 500px;">
+                <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+            </div>
+            <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+        </body>
+        </html>
     """
-    st.components.v1.html(elevenlabs_html, height=600)
+    with st.expander("💬 Asistente de Voz", expanded=True):
+        st.components.v1.html(chat_html, height=550, scrolling=True)
 
-# Sidebar mejorada y más profesional
-with st.sidebar:
-    st.header("⚙️ Configuración")
-    
-    # API Key con mejor manejo de estado
-    st.subheader("Configuración de API")
-    ke = st.text_input(
-        "API Key de Anthropic",
-        type="password",
-        help="Ingresa tu clave API de Anthropic para continuar"
-    )
-    
-    if ke:
-        os.environ['ANTHROPIC_API_KEY'] = ke
-        st.success("API configurada correctamente")
-    
-    # Información del sistema
-    st.markdown("---")
-    st.subheader("Sobre el Sistema")
-    with st.expander("ℹ️ Información", expanded=False):
-        st.markdown("""
-        Este sistema utiliza:
-        - Claude para análisis avanzado
-        - Pandas para procesamiento de datos
-        - IA para interpretación de resultados
-        """)
+# Columna principal
+with col_main:
+    # Sidebar
+    with st.sidebar:
+        st.header("⚙️ Configuración")
+        
+        # API Key
+        st.subheader("Configuración de API")
+        ke = st.text_input(
+            "API Key de Anthropic",
+            type="password",
+            help="Ingresa tu clave API de Anthropic para continuar"
+        )
+        
+        if ke:
+            os.environ['ANTHROPIC_API_KEY'] = ke
+            st.success("API configurada correctamente")
+        
+        # Información del sistema
+        st.markdown("---")
+        st.subheader("Sobre el Sistema")
+        with st.expander("ℹ️ Información", expanded=False):
+            st.markdown("""
+            Este sistema utiliza:
+            - Claude para análisis avanzado
+            - Pandas para procesamiento de datos
+            - IA para interpretación de resultados
+            """)
 
-# Área principal de la aplicación
-        # Carga de imagen con mejor presentación
-        image = Image.open('data_analisis.png')
-        st.image(image, use_column_width=True)
+    # Imagen principal
+    image = Image.open('data_analisis.png')
+    st.image(image, use_column_width=True)
     
-    # Carga de archivo con mejor feedback
+    # Carga de archivo
     st.subheader("📁 Carga de Datos")
     uploaded_file = st.file_uploader(
         "Selecciona tu archivo CSV",
@@ -170,104 +155,4 @@ with st.sidebar:
         with col1:
             st.metric("Filas", df.shape[0])
         with col2:
-            st.metric("Columnas", df.shape[1])
-        with col3:
-            st.metric("Campos Total", df.size)
-        
-        # Vista previa de datos
-        with st.expander("📊 Vista Previa de Datos", expanded=True):
-            st.dataframe(
-                df.head(),
-                use_container_width=True,
-                height=200
-            )
-            
-            # Información básica del dataset
-            if st.checkbox("Mostrar información del dataset"):
-                st.write("### Información del Dataset")
-                buffer = io.StringIO()
-                df.info(buf=buffer)
-                st.text(buffer.getvalue())
-
-        # Formulario de consulta
-        st.subheader("🔍 Consulta")
-        with st.form(key='query_form'):
-            user_question = st.text_area(
-                "¿Qué deseas analizar en los datos?",
-                placeholder="Ejemplo: ¿Cuál es el promedio de ventas por mes?",
-                help="Escribe tu pregunta en lenguaje natural"
-            )
-            
-            col1, col2, col3 = st.columns([1,2,1])
-            with col2:
-                submit_button = st.form_submit_button(
-                    "🔍 Analizar Datos",
-                    use_container_width=True
-                )
-
-        def format_response(response, question):
-            """Mejora el formato de la respuesta y agrega opciones de descarga"""
-            st.markdown("### 📋 Resultados del Análisis")
-            st.info(response)
-            
-            # Agregar opciones de descarga si hay resultados
-            if response:
-                st.markdown("### 📥 Descargar Resultados")
-                col1, col2 = st.columns(2)
-                
-                # Botón de descarga TXT
-                with col1:
-                    st.download_button(
-                        label="📄 Descargar TXT",
-                        data=f"Pregunta:\n{question}\n\nRespuesta:\n{response}",
-                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                        mime="text/plain"
-                    )
-                
-                # Botón de descarga PDF
-                with col2:
-                    pdf_data = create_pdf(response, question)
-                    st.download_button(
-                        label="📑 Descargar PDF",
-                        data=pdf_data,
-                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                        mime="application/pdf"
-                    )
-
-        def custom_prompt(question):
-            return f"""
-            Responde SIEMPRE en español.
-            Analiza los siguientes datos según esta pregunta: {question}
-            
-            Por favor:
-            1. Da una respuesta clara y concisa
-            2. Si son resultados numéricos, menciónalos claramente
-            3. Si es una tendencia o patrón, descríbelo específicamente
-            4. Usa formato de lista o puntos cuando sea apropiado
-            5. No muestres el código, solo los resultados
-            """
-
-        # Proceso de análisis
-        if submit_button:
-            if not ke:
-                st.error("⚠️ Por favor, configura tu API key primero")
-            elif not user_question:
-                st.warning("⚠️ Por favor, ingresa una pregunta")
-            else:
-                try:
-                    with st.spinner('⏳ Analizando datos...'):
-                        agent = create_pandas_dataframe_agent(
-                            ChatAnthropic(model='claude-3-5-sonnet-20241022'),
-                            df,
-                            verbose=True,
-                            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-                            handle_parsing_errors=True,
-                            allow_dangerous_code=True
-                        )
-                        
-                        response = agent.run(custom_prompt(user_question))
-                        format_response(response, user_question)
-                        
-                except Exception as e:
-                    st.error(f"❌ Error en el análisis: {str(e)}")
-                    st.error("Por favor, intenta reformular tu pregunta o verifica tus datos")
+            st.metric("Columnas", df.sh
