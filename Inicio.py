@@ -174,7 +174,7 @@ if uploaded_file is not None:
     with st.form(key='query_form'):
         user_question = st.text_area(
             "¿Qué deseas analizar en los datos?",
-            placeholder="Ejemplo: ¿Cuál es el promedio de ventas por mes?",
+            placeholder="Ejemplo: ¿Cotiza un cilindro de 220 metros de longitud y 12 de diametro?",
             help="Escribe tu pregunta en lenguaje natural"
         )
         
@@ -216,7 +216,7 @@ if uploaded_file is not None:
 
     def custom_prompt(question):
         return f"""
-        Responde SIEMPRE en español.
+        Responde SIEMPRE en español. vas a cotizar usando la info del dataframe, los cilindros tienen magnitudes en metros
         Analiza los siguientes datos según esta pregunta: {question}
         
         Por favor:
