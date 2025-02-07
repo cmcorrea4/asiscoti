@@ -174,7 +174,7 @@ if uploaded_file is not None:
     with st.form(key='query_form'):
         user_question = st.text_area(
             "¿Qué deseas analizar en los datos?",
-            placeholder="Ejemplo: ¿Cotiza un cilindro de 220 metros de longitud y 12 de diametro?",
+            placeholder="Ejemplo: ¿Cotiza un cilindro de 220 de Longitud y 12 de Diametro?",
             help="Escribe tu pregunta en lenguaje natural"
         )
         
@@ -220,7 +220,7 @@ if uploaded_file is not None:
         la información corresponde a cilindros de madera tienen , la idea es 
         encontrar las información correspondiente a columnas y los valores, para
         definir los precios o cotizar realizando la suma de los elementos de la 
-        consulta
+        consulta, Diametro o diámetro son equivalentes, o Longitud y longitud en las preguntas
         Analiza los siguientes datos según esta pregunta: {question}
         
         Por favor:
