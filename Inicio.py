@@ -216,7 +216,11 @@ if uploaded_file is not None:
 
     def custom_prompt(question):
         return f"""
-        Responde SIEMPRE en español. vas a cotizar usando la info del dataframe, los cilindros tienen magnitudes en metros
+        Responde SIEMPRE en español. vas a cotizar usando la info del dataframe, 
+        la información corresponde a cilindros de madera tienen , la idea es 
+        encontrar las información correspondiente a columnas y los valores, para
+        definir los precios o cotizar realizando la suma de los elementos de la 
+        consulta
         Analiza los siguientes datos según esta pregunta: {question}
         
         Por favor:
