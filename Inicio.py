@@ -95,7 +95,7 @@ with col_voice:
             <title>Chat Widget</title>
         </head>
         <body>
-            <div style="width: 100%; height: 400px;">
+            <div style="width: 100%; height: 300px;">
                 <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
             </div>
             <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
