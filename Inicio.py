@@ -86,27 +86,31 @@ st.markdown("""
 with st.container():
     st.title('📊 Análisis Inteligente de Datos')
     st.markdown("---")
+
+    # División en dos columnas: principal y asistente de voz
+    col_main, col_voice = st.columns([2, 1])
     
-    # Agregar el componente de Elevenlabs con iframe
-    chat_html = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Chat Widget</title>
-        </head>
-        <body>
-            <div style="width: 100%; height: 600px;">
-                <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
-            </div>
-            <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-        </body>
-        </html>
-    """
+    with col_voice:
+        # Componente de Elevenlabs
+        chat_html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Chat Widget</title>
+            </head>
+            <body>
+                <div style="width: 100%; height: 500px;">
+                    <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+                </div>
+                <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+            </body>
+            </html>
+        """
+        with st.expander("💬 Asistente de Voz", expanded=True):
+            st.components.v1.html(chat_html, height=550, scrolling=True)
     
-    # Crear un expander para el chat
-    with st.expander("💬 Asistente de Voz", expanded=True):
-        st.components.v1.html(chat_html, height=650, scrolling=True)
+    with col_main:
     
     # Agregar el componente de Elevenlabs
     elevenlabs_html = """
@@ -145,11 +149,7 @@ with st.sidebar:
         """)
 
 # Área principal de la aplicación
-main_container = st.container()
-with main_container:
-    # Carga de imagen con mejor presentación
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
+        # Carga de imagen con mejor presentación
         image = Image.open('data_analisis.png')
         st.image(image, use_column_width=True)
     
