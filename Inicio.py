@@ -87,6 +87,27 @@ with st.container():
     st.title('📊 Análisis Inteligente de Datos')
     st.markdown("---")
     
+    # Agregar el componente de Elevenlabs con iframe
+    chat_html = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Chat Widget</title>
+        </head>
+        <body>
+            <div style="width: 100%; height: 600px;">
+                <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+            </div>
+            <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+        </body>
+        </html>
+    """
+    
+    # Crear un expander para el chat
+    with st.expander("💬 Asistente de Voz", expanded=True):
+        st.components.v1.html(chat_html, height=650, scrolling=True)
+    
     # Agregar el componente de Elevenlabs
     elevenlabs_html = """
         <div style="margin: 20px 0;">
