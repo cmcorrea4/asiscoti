@@ -220,7 +220,7 @@ if uploaded_file is not None:
         la información corresponde a cilindros de madera tienen , la idea es 
         encontrar las información correspondiente a columnas y los valores, para
         definir los precios o cotizar realizando la suma de los elementos de la 
-        consulta, Diametro o diámetro son equivalentes, o Longitud y longitud en las preguntas
+        consulta
         Analiza los siguientes datos según esta pregunta: {question}
         
         Por favor:
