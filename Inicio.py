@@ -155,4 +155,104 @@ with col_main:
         with col1:
             st.metric("Filas", df.shape[0])
         with col2:
-            st.metric("Columnas", df.sh
+            st.metric("Columnas", df.shape[1])ape[1])
+        with col3:
+            st.metric("Campos Total", df.size)
+        
+        # Vista previa de datos
+        with st.expander("📊 Vista Previa de Datos", expanded=True):
+            st.dataframe(
+                df.head(),
+                use_container_width=True,
+                height=200
+            )
+            
+            # Información básica del dataset
+            if st.checkbox("Mostrar información del dataset"):
+                st.write("### Información del Dataset")
+                buffer = io.StringIO()
+                df.info(buf=buffer)
+                st.text(buffer.getvalue())
+
+        # Formulario de consulta
+        st.subheader("🔍 Consulta")
+        with st.form(key='query_form'):
+            user_question = st.text_area(
+                "¿Qué deseas analizar en los datos?",
+                placeholder="Ejemplo: ¿Cuál es el promedio de ventas por mes?",
+                help="Escribe tu pregunta en lenguaje natural"
+            )
+            
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                submit_button = st.form_submit_button(
+                    "🔍 Analizar Datos",
+                    use_container_width=True
+                )
+
+        def format_response(response, question):
+            """Mejora el formato de la respuesta y agrega opciones de descarga"""
+            st.markdown("### 📋 Resultados del Análisis")
+            st.info(response)
+            
+            # Agregar opciones de descarga si hay resultados
+            if response:
+                st.markdown("### 📥 Descargar Resultados")
+                col1, col2 = st.columns(2)
+                
+                # Botón de descarga TXT
+                with col1:
+                    st.download_button(
+                        label="📄 Descargar TXT",
+                        data=f"Pregunta:\n{question}\n\nRespuesta:\n{response}",
+                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                        mime="text/plain"
+                    )
+                
+                # Botón de descarga PDF
+                with col2:
+                    pdf_data = create_pdf(response, question)
+                    st.download_button(
+                        label="📑 Descargar PDF",
+                        data=pdf_data,
+                        file_name=f"analisis_resultados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                        mime="application/pdf"
+                    )
+
+        def custom_prompt(question):
+            return f"""
+            Responde SIEMPRE en español.
+            Analiza los siguientes datos según esta pregunta: {question}
+            
+            Por favor:
+            1. Da una respuesta clara y concisa
+            2. Si son resultados numéricos, menciónalos claramente
+            3. Si es una tendencia o patrón, descríbelo específicamente
+            4. Usa formato de lista o puntos cuando sea apropiado
+            5. No muestres el código, solo los resultados
+            """
+
+        # Proceso de análisis
+        if submit_button:
+            if not ke:
+                st.error("⚠️ Por favor, configura tu API key primero")
+            elif not user_question:
+                st.warning("⚠️ Por favor, ingresa una pregunta")
+            else:
+                try:
+                    with st.spinner('⏳ Analizando datos...'):
+                        agent = create_pandas_dataframe_agent(
+                            ChatAnthropic(model='claude-3-5-sonnet-20241022'),
+                            df,
+                            verbose=True,
+                            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+                            handle_parsing_errors=True,
+                            allow_dangerous_code=True
+                        )
+                        
+                        response = agent.run(custom_prompt(user_question))
+                        format_response(response, user_question)
+                        
+                except Exception as e:
+                    st.error(f"❌ Error en el análisis: {str(e)}")
+                    st.error("Por favor, intenta reformular tu pregunta o verifica tus datos")
