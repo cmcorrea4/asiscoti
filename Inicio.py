@@ -95,7 +95,7 @@ with col_voice:
             <title>Chat Widget</title>
         </head>
         <body>
-            <div style="width: 100%; height: 500px;">
+            <div style="width: 100%; height: 100px;">
                 <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
             </div>
             <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
@@ -135,8 +135,8 @@ with col_main:
             """)
 
     # Imagen principal
-    image = Image.open('data_analisis.png')
-    st.image(image, use_column_width=True)
+    #image = Image.open('data_analisis.png')
+    #st.image(image, use_column_width=True)
     
     # Carga de archivo
     st.subheader("📁 Carga de Datos")
