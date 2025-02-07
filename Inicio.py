@@ -99,7 +99,7 @@ chat_html = """
     </body>
     </html>
 """
-st.components.v1.html(chat_html, height=250, scrolling=True)
+st.components.v1.html(chat_html, height=150, scrolling=False)
 st.markdown("---")
 
 # Sidebar
