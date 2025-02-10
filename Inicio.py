@@ -276,3 +276,26 @@ if uploaded_file is not None:
                         st.info("No se pudo procesar la respuesta. Por favor, intenta reformular tu pregunta.")
                 else:
                     st.info("Por favor, intenta reformular tu pregunta de una manera más clara.")
+
+
+
+
+# Asistente de voz en la parte superior
+st.subheader("💬 Asistente de Voz")
+chat_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Chat Widget</title>
+    </head>
+    <body>
+        <div style="width: 50%; height: 50px;">
+            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+        </div>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+    </body>
+    </html>
+"""
+st.components.v1.html(chat_html, height=150, scrolling=False)
+st.markdown("---")
