@@ -18,7 +18,7 @@ from datetime import datetime
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Análisis Inteligente de Datos",
+    page_title="Asesor de Cotización",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -33,7 +33,7 @@ def create_pdf(response, question):
     pdf.set_font('Arial', 'B', 16)
     
     # Título
-    pdf.cell(190, 10, 'Reporte de Análisis de Datos', 0, 1, 'C')
+    pdf.cell(190, 10, 'Reporte de Consulta', 0, 1, 'C')
     
     # Fecha
     pdf.set_font('Arial', '', 12)
@@ -79,7 +79,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título principal
-st.title('📊 Análisis Inteligente de Datos')
+st.title('📊 Asistente de Cotización')
 st.markdown("---")
 
 # Asistente de voz en la parte superior
@@ -181,18 +181,18 @@ if uploaded_file is not None:
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
             submit_button = st.form_submit_button(
-                "🔍 Analizar Datos",
+                "🔍 Cotizar",
                 use_container_width=True
             )
 
     def format_response(response, question):
         """Mejora el formato de la respuesta y agrega opciones de descarga"""
-        st.markdown("### 📋 Resultados del Análisis")
+        st.markdown("### 📋 Resultados de la Consulta")
         st.info(response)
         
         # Agregar opciones de descarga si hay resultados
         if response:
-            st.markdown("### 📥 Descargar Resultados")
+            st.markdown("### 📥 Descargar Consulta")
             col1, col2 = st.columns(2)
             
             # Botón de descarga TXT
