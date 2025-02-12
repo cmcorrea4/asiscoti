@@ -299,3 +299,22 @@ chat_html = """
 """
 st.components.v1.html(chat_html, height=150, scrolling=False)
 st.markdown("---")
+
+st.subheader("💬 Asistente de Voz")
+chat_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Chat Widget</title>
+    </head>
+    <body>
+        <div style="width: 100%; height: 100px; max-width: 800px; margin: 0 auto;">
+            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+        </div>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+    </body>
+    </html>
+"""
+st.components.v1.html(chat_html, height=150, scrolling=False)
