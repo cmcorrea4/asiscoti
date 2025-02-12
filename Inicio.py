@@ -99,7 +99,7 @@ chat_html = """
     </body>
     </html>
 """
-st.components.v1.html(chat_html, height=200, scrolling=False)
+st.components.v1.html(chat_html, height=150, scrolling=False)
 st.markdown("---")
 
 # Sidebar
@@ -314,7 +314,25 @@ chat_html = """
             <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
         </div>
         <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+
+
+        
     </body>
     </html>
 """
 st.components.v1.html(chat_html, height=150, scrolling=False)
+
+
+
+st.subheader("💬 Asistente de Voz")
+iframe_html = """
+    <iframe
+        src="https://elevenlabs.io/convai/embed/gMh8bGtmxS5OxxPwDuKT"
+        width="100%"
+        height="150px"
+        frameborder="0"
+        allow="microphone"
+        style="border-radius: 8px;">
+    </iframe>
+"""
+st.components.v1.html(iframe_html, height=170, scrolling=False)
