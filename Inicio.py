@@ -323,16 +323,34 @@ chat_html = """
 st.components.v1.html(chat_html, height=150, scrolling=False)
 
 
-
 st.subheader("💬 Asistente de Voz")
-iframe_html = """
-    <iframe
-        src="https://elevenlabs.io/convai/embed/gMh8bGtmxS5OxxPwDuKT"
-        width="100%"
-        height="150px"
-        frameborder="0"
-        allow="microphone"
-        style="border-radius: 8px;">
-    </iframe>
+chat_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Chat Widget</title>
+        <script>
+            window.addEventListener('load', function() {
+                console.log('Página cargada, intentando cargar el widget...');
+            });
+        </script>
+    </head>
+    <body>
+        <div id="widget-container" style="width: 100%; height: 100px; max-width: 800px; margin: 0 auto;">
+            <elevenlabs-convai 
+                agent-id="gMh8bGtmxS5OxxPwDuKT"
+                style="display: block; width: 100%; height: 100%;">
+            </elevenlabs-convai>
+        </div>
+        <script 
+            src="https://elevenlabs.io/convai-widget/index.js" 
+            async 
+            onload="console.log('Script de ElevenLabs cargado')"
+            onerror="console.log('Error al cargar el script de ElevenLabs')">
+        </script>
+    </body>
+    </html>
 """
-st.components.v1.html(iframe_html, height=170, scrolling=False)
+st.components.v1.html(chat_html, height=150, scrolling=False)
