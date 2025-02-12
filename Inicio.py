@@ -82,25 +82,25 @@ st.markdown("""
 st.title('📊 Asistente de Cotización')
 st.markdown("---")
 
-# Asistente de voz en la parte superior
-#st.subheader("💬 Asistente de Voz")
-#chat_html = """
-#    <!DOCTYPE html>
-#    <html>
-#    <head>
-#        <meta charset="utf-8">
-#        <title>Chat Widget</title>
-#    </head>
-#    <body>
-#        <div style="width: 100%; height: 100px;">
-#            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
-#        </div>
-#        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-#    </body>
-#    </html>
-#"""
-#st.components.v1.html(chat_html, height=150, scrolling=False)
-#st.markdown("---")
+#Asistente de voz en la parte superior
+st.subheader("💬 Asistente de Voz")
+chat_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Chat Widget</title>
+    </head>
+    <body>
+        <div style="width: 100%; height: 100px;">
+            <elevenlabs-convai agent-id="gMh8bGtmxS5OxxPwDuKT"></elevenlabs-convai>
+        </div>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+    </body>
+    </html>
+"""
+st.components.v1.html(chat_html, height=150, scrolling=False)
+st.markdown("---")
 
 # Sidebar
 with st.sidebar:
