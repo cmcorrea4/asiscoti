@@ -231,7 +231,8 @@ if uploaded_file is not None:
           - Muestra subtotales por item incluyendo descuentos
           - Presenta el total final
         4. No muestres el código, solo los resultados del cálculo
-        5. Si faltan datos o hay ambigüedad, solicita aclaración
+        5. Si te piden fecha preséntala en formato días mes y año 
+        6. Si faltan datos o hay ambigüedad, solicita aclaración
 
         Formato de respuesta:
          - Especificaciones: longitud y diámetro
