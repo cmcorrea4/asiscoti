@@ -259,8 +259,7 @@ if uploaded_file is not None:
                         verbose=True,
                         agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
                         handle_parsing_errors=True,
-                        allow_dangerous_code=True,
-                        memory=memory
+                        allow_dangerous_code=True
                     )
                     
                     response = agent.run(custom_prompt(user_question))
