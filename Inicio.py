@@ -225,7 +225,7 @@ if uploaded_file is not None:
           - Usa la columna Desc. item para reconocer el producto a cotizar
           - Usa el Precio_COP como base
           - Aplica el porcentaje de descuento correspondiente
-          - Para múltiples items, suma los subtotales después de descuentos
+          - Para múltiples items, suma los subtotales después de descuentos,
           - Redondea todos los valores monetarios a números enteros
         3. Estructura la respuesta así:
           - Lista los items solicitados con sus especificaciones
@@ -259,12 +259,13 @@ if uploaded_file is not None:
                         verbose=True,
                         agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
                         handle_parsing_errors=True,
-                        allow_dangerous_code=True
+                        allow_dangerous_code=True,
+                        memory=memory
                     )
                     
                     response = agent.run(custom_prompt(user_question))
                     format_response(response, user_question)
-                    
+                    memory.clear()
             except Exception as e:
                 error_str = str(e)
                 if "Could not parse LLM output:" in error_str:
