@@ -265,7 +265,7 @@ if uploaded_file is not None:
                     
                     response = agent.run(custom_prompt(user_question))
                     format_response(response, user_question)
-                    memory.clear()
+                    
             except Exception as e:
                 error_str = str(e)
                 if "Could not parse LLM output:" in error_str:
@@ -275,6 +275,7 @@ if uploaded_file is not None:
                     if start_index > 0 and end_index > 0:
                         useful_response = error_str[start_index:end_index]
                         format_response(useful_response, user_question)
+                        memory.clear()
                     else:
                         st.info("No se pudo procesar la respuesta. Por favor, intenta reformular tu pregunta.")
                 else:
