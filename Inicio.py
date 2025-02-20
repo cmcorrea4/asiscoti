@@ -220,8 +220,9 @@ if uploaded_file is not None:
         para responder la siguiente consulta: {question}
 
         Instrucciones específicas:
-        1. Usa principalmente la columna "Desc.item" para encontrar el producto a cotizar,responde siempre en español de manera clara y concisa
+        1. Responde siempre en español de manera clara y concisa
         2. Al calcular cotizaciones:
+          - Usa la columna Desc. item para reconocer el producto a cotizar
           - Usa el Precio_COP como base
           - Aplica el porcentaje de descuento correspondiente
           - Para múltiples items, suma los subtotales después de descuentos
