@@ -222,7 +222,7 @@ if uploaded_file is not None:
         Instrucciones específicas:
         1. Responde siempre en español de manera clara y concisa
         2. Al calcular cotizaciones:
-          - Usa la columna Desc. item para reconocer el producto a cotizar
+          - Usa la columna Desc. item para reconocer el producto a cotizar puede estar en Máyuscula o mínuscula
           - Usa el Precio_COP como base
           - Aplica el porcentaje de descuento correspondiente
           - Para múltiples items, suma los subtotales después de descuentos,
